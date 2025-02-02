@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://bacgc5unuhc6a"]
+
+[ext_resource type="Script" path="res://Scripts/BuildingComponent.cs" id="1_kdr5i"]
+[ext_resource type="Texture2D" uid="uid://dk6jcdpulagol" path="res://assets/buildings/tower_blue.png" id="2_vfqyg"]
+[ext_resource type="PackedScene" uid="uid://bye7txb5cbwpm" path="res://scenes/BuildingComponent.tscn" id="3_laa2i"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_kdr5i")
+
+[node name="Tower" type="Sprite2D" parent="."]
+position = Vector2(0, -128)
+texture = ExtResource("2_vfqyg")
+centered = false
+offset = Vector2(-32, 16)
+region_enabled = true
+region_rect = Rect2(0, 48, 122.5, 184)
+
+[node name="Component" parent="." instance=ExtResource("3_laa2i")]
