@@ -1,4 +1,3 @@
-using System;
 using Game.Manager;
 using Godot;
 
@@ -14,6 +13,7 @@ public partial class BuildingComponent : Node2D
     public Vector2I GetGridCellPosition()
 	{
 		var gridPosition = GlobalPosition;
+		GD.Print(GlobalPosition);
 		Vector2 res = gridPosition;
 		return new Vector2I((int)res.X,(int)res.Y);
 	}
