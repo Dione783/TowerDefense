@@ -14,4 +14,3 @@ region_enabled = true
 region_rect = Rect2(0, 48, 122.5, 184)
 
 [node name="component" parent="." instance=ExtResource("3_laa2i")]
-position = Vector2(0, -128)
