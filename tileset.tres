@@ -1,6 +1,7 @@
-[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://b6s5cdbkpkg00"]
+[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://b6s5cdbkpkg00"]
 
 [ext_resource type="Texture2D" uid="uid://bgfp66sw1svfo" path="res://assets/tiles/tilemap_flat.png" id="1_g3pg3"]
+[ext_resource type="Texture2D" uid="uid://1h0ewl6vfc5" path="res://assets/tiles/tree.png" id="2_lghbv"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4hmbg"]
 resource_name = "Sand"
@@ -103,6 +104,12 @@ texture_region_size = Vector2i(64, 64)
 8:0/0/terrains_peering_bit/bottom_side = 0
 8:0/0/custom_data_0 = true
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ni86n"]
+texture = ExtResource("2_lghbv")
+texture_region_size = Vector2i(192, 192)
+0:0/animation_columns = 4
+0:0/0 = 0
+
 [resource]
 tile_size = Vector2i(64, 64)
 terrain_set_0/mode = 2
@@ -111,3 +118,4 @@ terrain_set_0/terrain_0/color = Color(0.262745, 0.886275, 0.0823529, 1)
 custom_data_layer_0/name = "is_buildable"
 custom_data_layer_0/type = 1
 sources/0 = SubResource("TileSetAtlasSource_4hmbg")
+sources/1 = SubResource("TileSetAtlasSource_ni86n")

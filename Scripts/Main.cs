@@ -6,7 +6,7 @@ public partial class Main : Node
 	private Sprite2D mouse;
 	private Button buttonTower;
 	private PackedScene scene;
-	private Vector2I? gridPosition;
+	private Vector2I gridPosition;
 	private GridManager gridManager;
 	private Vector2I? hoveredGridCellPosition;
 
@@ -26,16 +26,17 @@ public partial class Main : Node
 			mouse.Visible=true;
 			mouse.GlobalPosition = gridManager.getGridCellPosition();
 			gridPosition = gridManager.getGridCellPosition();
-			gridManager.highLightTile();
+			gridManager.HighLightExpandedBuildableTile(gridManager.getMousePosition(),3);
 		}
 	}
     public override void _UnhandledInput(InputEvent evt)
     {
-        if(evt.IsActionPressed("Mouse_Fire") && is_Dragging == true && gridManager.isBuildableTile(gridManager.getMousePosition())){
+        if(evt.IsActionPressed("Mouse_Fire") && is_Dragging == true && gridManager.isBuildableValid(gridManager.getMousePosition()) && gridManager.isBuildableTile(gridManager.getMousePosition())){
 			Node2D tower = scene.Instantiate<Node2D>();
 			AddChild(tower);
 			tower.GlobalPosition = gridManager.getGridCellPosition();
 			is_Dragging=false;
+			mouse.Visible=false;
 			hoveredGridCellPosition=null;
 		}
     }

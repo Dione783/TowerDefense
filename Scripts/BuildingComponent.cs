@@ -4,6 +4,8 @@ using Godot;
 namespace Game.Component;
 public partial class BuildingComponent : Node2D
 {
+	[Export]
+	public int buildingRadius {get;private set;}
 	public override void _Ready()
     {
         AddToGroup(nameof(BuildingComponent));
