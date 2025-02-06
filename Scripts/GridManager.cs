@@ -12,9 +12,12 @@ public partial class GridManager : Node
 	private TileMapLayer baseTerraintTileMapLayer;
 	private Vector2I? gridCellPosition;
 	private HashSet<Vector2I> validBuildableTile = new();
+
+	private List<TileMapLayer> allTileMapLayers = new();
 	public override void _Ready()
 	{
 		GameManager.instance.buildingPlaced += OnBuildingPlacing;
+		allTileMapLayers = getAllTileMapLayers(baseTerraintTileMapLayer);
 	}
 
 	public void setGridCellPosition()
@@ -50,9 +53,12 @@ public partial class GridManager : Node
 
 	public bool isBuildableValid(Vector2I tilePosition)
 	{
-		var tile = baseTerraintTileMapLayer.GetCellTileData(tilePosition);
-		if (tile == null) return false;
-		return (bool)tile.GetCustomData("is_buildable");
+		foreach(var layer in allTileMapLayers){
+			var data = layer.GetCellTileData(tilePosition);
+			if (data == null)continue;
+			return (bool)data.GetCustomData("is_buildable");
+		}
+		return false;
 	}
 
 	public void highLightTile()
@@ -97,6 +103,19 @@ public partial class GridManager : Node
 		var validTiles = getValidTiledInRadius(position,buildingComponent.buildingRadius);
 		validBuildableTile.UnionWith(validTiles);
 		validBuildableTile.ExceptWith(GetOcuppiedTiles());
+	}
+
+	private List<TileMapLayer> getAllTileMapLayers(TileMapLayer tileMapLayer){
+		var result = new List<TileMapLayer>();
+		var children = tileMapLayer.GetChildren();
+		children.Reverse();
+		foreach(var layer in tileMapLayer.GetChildren()){
+			if(layer is TileMapLayer child){
+				result.AddRange(getAllTileMapLayers(child));
+			}
+		}
+		result.Add(tileMapLayer);
+		return result;
 	}
 
 	private IEnumerable<Vector2I> GetOcuppiedTiles(){

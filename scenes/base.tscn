@@ -5,11 +5,14 @@
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_c0mmk"]
 
 [node name="Base" type="Node2D"]
+y_sort_enabled = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+y_sort_enabled = true
+position = Vector2(32, 32)
 texture = SubResource("PlaceholderTexture2D_c0mmk")
+offset = Vector2(-32, -32)
 region_enabled = true
 region_rect = Rect2(0, 0, 64, 64)
 
 [node name="BuildingComponent" parent="." instance=ExtResource("1_ro1oj")]
-buildingRadius = 3
