@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Component;
@@ -6,6 +7,8 @@ using Godot;
 
 public partial class GridManager : Node
 {
+	private const string IS_BUILDABLE = "is_buildable";
+	private const string IS_WOOD  = "is_wood";
 	[Export]
 	private TileMapLayer highLightTileMapLayer;
 	[Export]
@@ -25,7 +28,7 @@ public partial class GridManager : Node
 		gridCellPosition = getGridCellPosition();
 	}
 
-	private void clearHighlight()
+	public void clearHighlight()
 	{
 		highLightTileMapLayer.Clear();
 	}
@@ -51,12 +54,13 @@ public partial class GridManager : Node
 		return validBuildableTile.Contains(tilePosition);
 	}
 
-	public bool isBuildableValid(Vector2I tilePosition)
+	public bool isCustomData(Vector2I tilePosition, string dataName)
 	{
-		foreach(var layer in allTileMapLayers){
+		foreach (var layer in allTileMapLayers)
+		{
 			var data = layer.GetCellTileData(tilePosition);
-			if (data == null)continue;
-			return (bool)data.GetCustomData("is_buildable");
+			if (data == null) continue;
+			return (bool)data.GetCustomData(dataName);
 		}
 		return false;
 	}
@@ -69,11 +73,20 @@ public partial class GridManager : Node
 		}
 	}
 
+	public void highLightResourceTiles(Vector2I coord, int radius)
+	{
+		var validTiles = getResourceInRadius(coord, radius);
+		var atlasCoord = new Vector2I(1, 0);
+		foreach (var tilePosition in validTiles)
+		{
+			highLightTileMapLayer.SetCell(new Vector2I(tilePosition.X, tilePosition.Y), 0, atlasCoord);
+		}
+	}
+
 	public void HighLightExpandedBuildableTile(Vector2I coord, int radius)
 	{
-		clearHighlight();
 		highLightTile();
-		var validTiles = getValidTiledInRadius(coord, radius);
+		var validTiles = getValidTilesInRadius(coord, radius).ToHashSet();
 		var expandedTiles = validTiles.Except(validBuildableTile).Except(GetOcuppiedTiles());
 		var atlasCoord = new Vector2I(1, 0);
 		foreach (var tilePosition in expandedTiles)
@@ -82,7 +95,16 @@ public partial class GridManager : Node
 		}
 	}
 
-	private List<Vector2I> getValidTiledInRadius(Vector2I position, int radius)
+	private List<Vector2I> getResourceInRadius(Vector2I position, int radius)
+	{
+		return getTilesInRadius(position, radius, (tilePosition) =>
+		{
+			return isCustomData(tilePosition, IS_WOOD);
+		});
+	}
+
+
+	private List<Vector2I> getTilesInRadius(Vector2I position, int radius, Func<Vector2I, bool> filterFn)
 	{
 		var list = new List<Vector2I>();
 		for (int i = position.X - radius; i <= position.X + radius; i++)
@@ -90,27 +112,38 @@ public partial class GridManager : Node
 			for (int j = position.Y - radius; j <= position.Y + radius; j++)
 			{
 				var tilePosition = new Vector2I(i, j);
-				if (!isBuildableValid(tilePosition)) continue;
+				if (!filterFn(tilePosition)) continue;
 				list.Add(tilePosition);
 			}
 		}
 		return list;
 	}
 
+	private List<Vector2I> getValidTilesInRadius(Vector2I position, int radius)
+	{
+		return getTilesInRadius(position, radius, (tilePosition) =>
+		{
+			return isCustomData(tilePosition, IS_BUILDABLE);
+		});
+	}
+
 	private void setBuildableTiles(BuildingComponent buildingComponent)
 	{
 		var position = buildingComponent.GetGridCellPosition();
-		var validTiles = getValidTiledInRadius(position,buildingComponent.buildingResource.buildableRadius);
+		var validTiles = getValidTilesInRadius(position, buildingComponent.buildingResource.buildableRadius);
 		validBuildableTile.UnionWith(validTiles);
 		validBuildableTile.ExceptWith(GetOcuppiedTiles());
 	}
 
-	private List<TileMapLayer> getAllTileMapLayers(TileMapLayer tileMapLayer){
+	private List<TileMapLayer> getAllTileMapLayers(TileMapLayer tileMapLayer)
+	{
 		var result = new List<TileMapLayer>();
 		var children = tileMapLayer.GetChildren();
 		children.Reverse();
-		foreach(var layer in tileMapLayer.GetChildren()){
-			if(layer is TileMapLayer child){
+		foreach (var layer in tileMapLayer.GetChildren())
+		{
+			if (layer is TileMapLayer child)
+			{
 				result.AddRange(getAllTileMapLayers(child));
 			}
 		}
@@ -118,7 +151,8 @@ public partial class GridManager : Node
 		return result;
 	}
 
-	private IEnumerable<Vector2I> GetOcuppiedTiles(){
+	private IEnumerable<Vector2I> GetOcuppiedTiles()
+	{
 		var buildingComponents = GetTree().GetNodesInGroup(nameof(BuildingComponent)).Cast<BuildingComponent>();
 		var exceptions = buildingComponents.Select(x => x.GetGridCellPosition());
 		return exceptions;

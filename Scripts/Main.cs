@@ -37,12 +37,14 @@ public partial class Main : Node
 			mouse.Visible = true;
 			mouse.GlobalPosition = gridManager.getGridCellPosition();
 			gridPosition = gridManager.getGridCellPosition();
+			gridManager.clearHighlight();
 			gridManager.HighLightExpandedBuildableTile(gridManager.getMousePosition(),toPlaceResource.buildableRadius);
+			gridManager.highLightResourceTiles(gridManager.getMousePosition(),toPlaceResource.resourceRadius);
 		}
 	}
 	public override void _UnhandledInput(InputEvent evt)
 	{
-		if (evt.IsActionPressed("Mouse_Fire") && is_Dragging == true && gridManager.isBuildableValid(gridManager.getMousePosition()) && gridManager.isBuildableTile(gridManager.getMousePosition()))
+		if (evt.IsActionPressed("Mouse_Fire") && is_Dragging == true && gridManager.isBuildableTile(gridManager.getMousePosition()) && gridManager.isBuildableTile(gridManager.getMousePosition()))
 		{
 			placeBulding();
 		}
