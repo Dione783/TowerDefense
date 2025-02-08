@@ -1,3 +1,4 @@
+using Game.Building.Resources;
 using Godot;
 
 public partial class Main : Node
@@ -6,13 +7,13 @@ public partial class Main : Node
 	private Sprite2D mouse;
 	private Button buttonTower;
 	private Button buttonVillage;
-	private PackedScene TowerScene;
-	private PackedScene VillageScene;
+	private BuildingResource towerResource;
+	private BuildingResource villageResource;
 	private Vector2I gridPosition;
 	private GridManager gridManager;
 	private Vector2I? hoveredGridCellPosition;
 	private Node2D ySortRoot;
-	private PackedScene buildToPlace;
+	private BuildingResource toPlaceResource;
 
 
 	private bool is_Dragging = false;
@@ -21,8 +22,8 @@ public partial class Main : Node
 		mouse = GetNode<Sprite2D>("Mouse");
 		buttonTower = GetNode<Button>("ButtonTower");
 		buttonVillage = GetNode<Button>("ButtonVillage");
-		TowerScene = GD.Load<PackedScene>("res://scenes/tower.tscn");
-		VillageScene = GD.Load<PackedScene>("res://scenes/house.tscn");
+		towerResource = GD.Load<BuildingResource>("res://Resources/tower.tres");
+		villageResource = GD.Load<BuildingResource>("res://Resources/village.tres");
 		ySortRoot = GetNode<Node2D>("YSortRoot");
 		gridManager = GetNode<GridManager>("GridManager");
 		buttonTower.Pressed += buttonTowerPressed;
@@ -36,7 +37,7 @@ public partial class Main : Node
 			mouse.Visible = true;
 			mouse.GlobalPosition = gridManager.getGridCellPosition();
 			gridPosition = gridManager.getGridCellPosition();
-			gridManager.HighLightExpandedBuildableTile(gridManager.getMousePosition(),3);
+			gridManager.HighLightExpandedBuildableTile(gridManager.getMousePosition(),toPlaceResource.buildableRadius);
 		}
 	}
 	public override void _UnhandledInput(InputEvent evt)
@@ -49,7 +50,7 @@ public partial class Main : Node
 
 	private void placeBulding()
 	{
-		Node2D build = buildToPlace.Instantiate<Node2D>();
+		Node2D build = toPlaceResource.scene.Instantiate<Node2D>();
 		ySortRoot.AddChild(build);
 		build.GlobalPosition = gridManager.getGridCellPosition();
 		is_Dragging = false;
@@ -58,12 +59,12 @@ public partial class Main : Node
 	}
 	private void buttonTowerPressed()
 	{
-		buildToPlace=TowerScene;
+		toPlaceResource=towerResource;
 		is_Dragging = true;
 	}
 
 	private void buttonVillagePressed(){
-		buildToPlace=VillageScene;
+		toPlaceResource=villageResource;
 		is_Dragging=true;
 	}
 }
