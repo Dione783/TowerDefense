@@ -9,13 +9,15 @@ public partial class GridManager : Node
 {
 	private const string IS_BUILDABLE = "is_buildable";
 	private const string IS_WOOD  = "is_wood";
+	[Signal]
+	public delegate void updateResourcesEventHandler(int resources);
 	[Export]
 	private TileMapLayer highLightTileMapLayer;
 	[Export]
 	private TileMapLayer baseTerraintTileMapLayer;
 	private Vector2I? gridCellPosition;
 	private HashSet<Vector2I> validBuildableTile = new();
-
+	private HashSet<Vector2I> collectedResources = new();
 	private List<TileMapLayer> allTileMapLayers = new();
 	public override void _Ready()
 	{
@@ -36,6 +38,7 @@ public partial class GridManager : Node
 	private void OnBuildingPlacing(BuildingComponent buildingComponent)
 	{
 		setBuildableTiles(buildingComponent);
+		setGettedResources(buildingComponent);
 		highLightTile();
 	}
 
@@ -95,6 +98,7 @@ public partial class GridManager : Node
 		}
 	}
 
+
 	private List<Vector2I> getResourceInRadius(Vector2I position, int radius)
 	{
 		return getTilesInRadius(position, radius, (tilePosition) =>
@@ -133,6 +137,16 @@ public partial class GridManager : Node
 		var validTiles = getValidTilesInRadius(position, buildingComponent.buildingResource.buildableRadius);
 		validBuildableTile.UnionWith(validTiles);
 		validBuildableTile.ExceptWith(GetOcuppiedTiles());
+	}
+
+	private void setGettedResources(BuildingComponent buildingComponent){
+		var position = buildingComponent.GetGridCellPosition();
+		var resource = getResourceInRadius(position,buildingComponent.buildingResource.resourceRadius);
+		var oldResourcesCount = collectedResources.Count;
+		collectedResources.UnionWith(resource);
+		if(oldResourcesCount != collectedResources.Count){
+			EmitSignal(SignalName.updateResources,collectedResources.Count);
+		}
 	}
 
 	private List<TileMapLayer> getAllTileMapLayers(TileMapLayer tileMapLayer)

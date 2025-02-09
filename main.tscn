@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=4 uid="uid://4ots4k2xes1s"]
+[gd_scene load_steps=8 format=4 uid="uid://4ots4k2xes1s"]
 
 [ext_resource type="TileSet" uid="uid://b6s5cdbkpkg00" path="res://tileset.tres" id="1_1y07t"]
 [ext_resource type="Script" path="res://scripts/Main.cs" id="1_prh6t"]
 [ext_resource type="PackedScene" uid="uid://85dr3qyeworx" path="res://scenes/manager/GridManager.tscn" id="2_qdntu"]
 [ext_resource type="TileSet" uid="uid://cx4p7iabt5qxo" path="res://highlightTileset.tres" id="3_jcmr1"]
 [ext_resource type="PackedScene" uid="uid://deic6p26wrat4" path="res://scenes/base.tscn" id="5_hx7tf"]
+[ext_resource type="PackedScene" uid="uid://bu14nabw1q6ia" path="res://scenes/GameUI.tscn" id="6_x3ysa"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_c8s8i"]
 
@@ -44,26 +45,4 @@ centered = false
 region_enabled = true
 region_rect = Rect2(0, 0, 64, 64)
 
-[node name="ButtonTower" type="Button" parent="."]
-anchors_preset = -1
-anchor_left = 0.046
-anchor_top = 0.967
-anchor_right = 0.046
-anchor_bottom = 0.967
-offset_left = -50.992
-offset_top = -15.616
-offset_right = 50.008
-offset_bottom = 15.384
-text = "Place Tower"
-
-[node name="ButtonVillage" type="Button" parent="."]
-anchors_preset = -1
-anchor_left = 0.046
-anchor_top = 0.967
-anchor_right = 0.046
-anchor_bottom = 0.967
-offset_left = 55.662
-offset_top = -16.255
-offset_right = 159.662
-offset_bottom = 14.745
-text = "Place Village"
+[node name="GameUi" parent="." instance=ExtResource("6_x3ysa")]

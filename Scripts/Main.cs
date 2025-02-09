@@ -1,12 +1,11 @@
 using Game.Building.Resources;
+using Game.UI;
 using Godot;
 
 public partial class Main : Node
 {
 	private Sprite2D cursor;
 	private Sprite2D mouse;
-	private Button buttonTower;
-	private Button buttonVillage;
 	private BuildingResource towerResource;
 	private BuildingResource villageResource;
 	private Vector2I gridPosition;
@@ -14,20 +13,19 @@ public partial class Main : Node
 	private Vector2I? hoveredGridCellPosition;
 	private Node2D ySortRoot;
 	private BuildingResource toPlaceResource;
-
-
+	private GameUi gameUI;
 	private bool is_Dragging = false;
 	public override void _Ready()
 	{
 		mouse = GetNode<Sprite2D>("Mouse");
-		buttonTower = GetNode<Button>("ButtonTower");
-		buttonVillage = GetNode<Button>("ButtonVillage");
+		gameUI = GetNode<GameUi>("GameUi");
 		towerResource = GD.Load<BuildingResource>("res://Resources/tower.tres");
 		villageResource = GD.Load<BuildingResource>("res://Resources/village.tres");
 		ySortRoot = GetNode<Node2D>("YSortRoot");
 		gridManager = GetNode<GridManager>("GridManager");
-		buttonTower.Pressed += buttonTowerPressed;
-		buttonVillage.Pressed += buttonVillagePressed;
+		gameUI.placeTower += buttonTowerPressed;
+		gameUI.placeVillage += buttonVillagePressed;
+		gridManager.updateResources += OnUpdateResources;
 	}
 
 	public override void _Process(double delta)
@@ -58,6 +56,7 @@ public partial class Main : Node
 		is_Dragging = false;
 		mouse.Visible = false;
 		hoveredGridCellPosition = null;
+		gridManager.clearHighlight();
 	}
 	private void buttonTowerPressed()
 	{
@@ -68,5 +67,9 @@ public partial class Main : Node
 	private void buttonVillagePressed(){
 		toPlaceResource=villageResource;
 		is_Dragging=true;
+	}
+
+	private void OnUpdateResources(int count){
+		GD.Print(count);
 	}
 }
