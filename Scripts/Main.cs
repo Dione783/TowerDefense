@@ -6,8 +6,6 @@ public partial class Main : Node
 {
 	private Sprite2D cursor;
 	private Sprite2D mouse;
-	private BuildingResource towerResource;
-	private BuildingResource villageResource;
 	private Vector2I gridPosition;
 	private GridManager gridManager;
 	private Vector2I? hoveredGridCellPosition;
@@ -19,12 +17,9 @@ public partial class Main : Node
 	{
 		mouse = GetNode<Sprite2D>("Mouse");
 		gameUI = GetNode<GameUi>("GameUi");
-		towerResource = GD.Load<BuildingResource>("res://Resources/tower.tres");
-		villageResource = GD.Load<BuildingResource>("res://Resources/village.tres");
 		ySortRoot = GetNode<Node2D>("YSortRoot");
 		gridManager = GetNode<GridManager>("GridManager");
-		gameUI.placeTower += buttonTowerPressed;
-		gameUI.placeVillage += buttonVillagePressed;
+		gameUI.placeBuilding += OnPlaceBuildingPressed;
 		gridManager.updateResources += OnUpdateResources;
 	}
 
@@ -40,6 +35,7 @@ public partial class Main : Node
 			gridManager.highLightResourceTiles(gridManager.getMousePosition(),toPlaceResource.resourceRadius);
 		}
 	}
+
 	public override void _UnhandledInput(InputEvent evt)
 	{
 		if (evt.IsActionPressed("Mouse_Fire") && is_Dragging == true && gridManager.isBuildableTile(gridManager.getMousePosition()) && gridManager.isBuildableTile(gridManager.getMousePosition()))
@@ -58,15 +54,11 @@ public partial class Main : Node
 		hoveredGridCellPosition = null;
 		gridManager.clearHighlight();
 	}
-	private void buttonTowerPressed()
+	
+	private void OnPlaceBuildingPressed(BuildingResource resource)
 	{
-		toPlaceResource=towerResource;
+		toPlaceResource=resource;
 		is_Dragging = true;
-	}
-
-	private void buttonVillagePressed(){
-		toPlaceResource=villageResource;
-		is_Dragging=true;
 	}
 
 	private void OnUpdateResources(int count){

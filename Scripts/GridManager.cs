@@ -98,12 +98,11 @@ public partial class GridManager : Node
 		}
 	}
 
-
 	private List<Vector2I> getResourceInRadius(Vector2I position, int radius)
 	{
 		return getTilesInRadius(position, radius, (tilePosition) =>
 		{
-			return isCustomData(tilePosition, IS_WOOD);
+			return isCustomData(tilePosition,IS_WOOD);
 		});
 	}
 
