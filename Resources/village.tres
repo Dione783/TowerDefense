@@ -7,5 +7,6 @@
 script = ExtResource("1_vqas2")
 buildableRadius = 0
 resourceRadius = 3
+useCost = 2
 name = "Village"
 scene = ExtResource("1_wsa48")

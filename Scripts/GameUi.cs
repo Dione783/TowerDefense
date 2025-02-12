@@ -12,11 +12,11 @@ public partial class GameUi : MarginContainer
 	public override void _Ready()
 	{
 		hBox = GetNode<HBoxContainer>("HBoxContainer");
-		foreach(BuildingResource resource in buildingResources){
+		foreach(BuildingResource resource in buildingResources) {
 			var button = new Button();
 			button.Text = $"Create {resource.name}";
 			hBox.AddChild(button);
-			button.Pressed += ()=>{
+			button.Pressed += ()=> {
 				EmitSignal(SignalName.placeBuilding,resource);
 			};
 		}

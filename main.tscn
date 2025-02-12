@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://4ots4k2xes1s"]
+[gd_scene load_steps=9 format=4 uid="uid://4ots4k2xes1s"]
 
 [ext_resource type="TileSet" uid="uid://b6s5cdbkpkg00" path="res://tileset.tres" id="1_1y07t"]
 [ext_resource type="Script" path="res://scripts/Main.cs" id="1_prh6t"]
@@ -6,6 +6,7 @@
 [ext_resource type="TileSet" uid="uid://cx4p7iabt5qxo" path="res://highlightTileset.tres" id="3_jcmr1"]
 [ext_resource type="PackedScene" uid="uid://deic6p26wrat4" path="res://scenes/base.tscn" id="5_hx7tf"]
 [ext_resource type="PackedScene" uid="uid://bu14nabw1q6ia" path="res://scenes/GameUI.tscn" id="6_x3ysa"]
+[ext_resource type="PackedScene" uid="uid://c3vhs0eradaib" path="res://scenes/BuildingManager.tscn" id="7_ffbdp"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_c8s8i"]
 
@@ -46,3 +47,9 @@ region_enabled = true
 region_rect = Rect2(0, 0, 64, 64)
 
 [node name="GameUi" parent="." instance=ExtResource("6_x3ysa")]
+
+[node name="BuildingManager" parent="." node_paths=PackedStringArray("mouse", "gridManager", "ySortRoot", "gameUI") instance=ExtResource("7_ffbdp")]
+mouse = NodePath("../Mouse")
+gridManager = NodePath("../GridManager")
+ySortRoot = NodePath("../YSortRoot")
+gameUI = NodePath("../GameUi")
