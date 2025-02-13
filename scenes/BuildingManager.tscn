@@ -4,3 +4,4 @@
 
 [node name="BuildingManager" type="Node"]
 script = ExtResource("1_kde6l")
+ghostBuildingScene = null

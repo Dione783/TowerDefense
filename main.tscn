@@ -7,8 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://deic6p26wrat4" path="res://scenes/base.tscn" id="5_hx7tf"]
 [ext_resource type="PackedScene" uid="uid://bu14nabw1q6ia" path="res://scenes/GameUI.tscn" id="6_x3ysa"]
 [ext_resource type="PackedScene" uid="uid://c3vhs0eradaib" path="res://scenes/BuildingManager.tscn" id="7_ffbdp"]
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_c8s8i"]
+[ext_resource type="PackedScene" uid="uid://c2krojcrkiq3s" path="res://scenes/BuildingGhostScene.tscn" id="8_x1pds"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_prh6t")
@@ -39,17 +38,10 @@ tile_set = ExtResource("3_jcmr1")
 [node name="Base" parent="." instance=ExtResource("5_hx7tf")]
 position = Vector2(288, 288)
 
-[node name="Mouse" type="Sprite2D" parent="."]
-position = Vector2(64, 0)
-texture = SubResource("PlaceholderTexture2D_c8s8i")
-centered = false
-region_enabled = true
-region_rect = Rect2(0, 0, 64, 64)
-
 [node name="GameUi" parent="." instance=ExtResource("6_x3ysa")]
 
-[node name="BuildingManager" parent="." node_paths=PackedStringArray("mouse", "gridManager", "ySortRoot", "gameUI") instance=ExtResource("7_ffbdp")]
-mouse = NodePath("../Mouse")
+[node name="BuildingManager" parent="." node_paths=PackedStringArray("gridManager", "ySortRoot", "gameUI") instance=ExtResource("7_ffbdp")]
 gridManager = NodePath("../GridManager")
 ySortRoot = NodePath("../YSortRoot")
 gameUI = NodePath("../GameUi")
+ghostBuildingScene = ExtResource("8_x1pds")

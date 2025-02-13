@@ -5,8 +5,6 @@ using System;
 
 public partial class BuildingManager : Node
 {
-	[Export]
-	private Sprite2D mouse;
 	private Vector2I gridPosition;
 	[Export]
 	private GridManager gridManager;
@@ -16,11 +14,15 @@ public partial class BuildingManager : Node
 	private BuildingResource toPlaceResource;
 	[Export]
 	private GameUi gameUI;
-	private bool is_Dragging = false;
-	private int initialResources = 4;
+	private int initialResources = 8;
 	private int usedResources;
 	private int currentCollectedResources;
+
 	private int AvailabeResources => initialResources + currentCollectedResources - usedResources;
+
+	[Export]
+	private PackedScene ghostBuildingScene;
+	private BuildingGhostScene ghostBuild;
 
 	public override void _Ready()
 	{
@@ -32,47 +34,69 @@ public partial class BuildingManager : Node
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		if (is_Dragging == true && (!hoveredGridCellPosition.HasValue || hoveredGridCellPosition != gridPosition))
+		if (!IsInstanceValid(ghostBuild)) return;
+
+		hoveredGridCellPosition = gridManager.getGridCellPosition();
+		ghostBuild.GlobalPosition = gridManager.getGridCellPosition();
+		if (toPlaceResource != null && !hoveredGridCellPosition.HasValue || hoveredGridCellPosition != gridPosition)
 		{
-			mouse.Visible = true;
-			mouse.GlobalPosition = gridManager.getGridCellPosition();
-			gridPosition = gridManager.getGridCellPosition();
-			gridManager.clearHighlight();
-			gridManager.HighLightExpandedBuildableTile(gridManager.getMousePosition(), toPlaceResource.buildableRadius);
-			gridManager.highLightResourceTiles(gridManager.getMousePosition(), toPlaceResource.resourceRadius);
+			gridDisplay();
+		}
+	}
+
+	private void gridDisplay()
+	{
+		ghostBuild.SetValid();
+		gridPosition = gridManager.getGridCellPosition();
+		gridManager.clearHighlight();
+		gridManager.HighLightExpandedBuildableTile(gridManager.getMousePosition(), toPlaceResource.buildableRadius);
+		gridManager.highLightResourceTiles(gridManager.getMousePosition(), toPlaceResource.resourceRadius);
+		if (gridManager.isBuildableTile(gridManager.getMousePosition()))
+		{
+			ghostBuild.SetValid();
+		}
+		else
+		{
+			ghostBuild.SetInvalid();
 		}
 	}
 
 	public override void _UnhandledInput(InputEvent evt)
 	{
 		if (evt.IsActionPressed("Mouse_Fire") &&
-		AvailabeResources >= toPlaceResource.useCost &&
+		hoveredGridCellPosition.HasValue &&
 		toPlaceResource != null &&
-		is_Dragging == true &&
-		gridManager.isBuildableTile(gridManager.getMousePosition()) &&
+		AvailabeResources >= toPlaceResource.useCost &&
 		gridManager.isBuildableTile(gridManager.getMousePosition()))
 		{
 			placeBulding();
-			GD.Print(AvailabeResources);
 		}
 	}
 
 	private void placeBulding()
 	{
+		if (!hoveredGridCellPosition.HasValue) return;
 		Node2D build = toPlaceResource.scene.Instantiate<Node2D>();
 		ySortRoot.AddChild(build);
 		build.GlobalPosition = gridManager.getGridCellPosition();
-		is_Dragging = false;
-		mouse.Visible = false;
-		hoveredGridCellPosition = null;
 		usedResources += toPlaceResource.useCost;
+		hoveredGridCellPosition = null;
 		gridManager.clearHighlight();
+		ghostBuild.QueueFree();
+		ghostBuild = null;
 	}
 
 	private void OnPlaceBuildingPressed(BuildingResource resource)
 	{
+		if (IsInstanceValid(ghostBuild))
+		{
+			ghostBuild.QueueFree();
+		}
+		ghostBuild = ghostBuildingScene.Instantiate<BuildingGhostScene>();
+		ySortRoot.AddChild(ghostBuild);
+		var buildingSprite = resource.sprite.Instantiate<Sprite2D>();
+		ghostBuild.AddChild(buildingSprite);
 		toPlaceResource = resource;
-		is_Dragging = true;
 	}
 
 	private void OnUpdateResources(int count)
