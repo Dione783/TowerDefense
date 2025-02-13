@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bacgc5unuhc6a"]
 
-[ext_resource type="PackedScene" uid="uid://bakblgvjemno7" path="res://scenes/Sprites/TowerSprite.tscn" id="1_0rgyx"]
+[ext_resource type="PackedScene" uid="uid://8etumxbi3np2" path="res://scenes/Sprites/TowerSprite.tscn" id="1_0rgyx"]
 [ext_resource type="PackedScene" uid="uid://bye7txb5cbwpm" path="res://scenes/BuildingComponent.tscn" id="3_laa2i"]
 
 [node name="Node2D" type="Node2D"]

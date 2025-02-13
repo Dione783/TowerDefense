@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/building/BuildingResource.cs" id="1_vqas2"]
 [ext_resource type="PackedScene" uid="uid://1enpvpw53m4e" path="res://scenes/village.tscn" id="1_wsa48"]
-[ext_resource type="PackedScene" uid="uid://b7fqwaf74qf5e" path="res://scenes/Sprites/VillageSprite.tscn" id="3_1r6cb"]
+[ext_resource type="PackedScene" uid="uid://c20smdiaxravh" path="res://scenes/Sprites/VillageSprite.tscn" id="3_1r6cb"]
 
 [resource]
 script = ExtResource("1_vqas2")

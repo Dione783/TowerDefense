@@ -17,6 +17,8 @@ public partial class BuildingManager : Node
 	private int initialResources = 8;
 	private int usedResources;
 	private int currentCollectedResources;
+	private readonly StringName FIRE_BUTTON = "Mouse_Fire";
+	private readonly StringName CANCEL_BUTTON = "cancel";
 
 	private int AvailabeResources => initialResources + currentCollectedResources - usedResources;
 
@@ -63,7 +65,11 @@ public partial class BuildingManager : Node
 
 	public override void _UnhandledInput(InputEvent evt)
 	{
-		if (evt.IsActionPressed("Mouse_Fire") &&
+		if (evt.IsActionPressed(CANCEL_BUTTON))
+		{
+			clearSelectedBuild();
+		}
+		else if (evt.IsActionPressed(FIRE_BUTTON) &&
 		hoveredGridCellPosition.HasValue &&
 		toPlaceResource != null &&
 		AvailabeResources >= toPlaceResource.useCost &&
@@ -80,9 +86,17 @@ public partial class BuildingManager : Node
 		ySortRoot.AddChild(build);
 		build.GlobalPosition = gridManager.getGridCellPosition();
 		usedResources += toPlaceResource.useCost;
+		clearSelectedBuild();
+	}
+
+	private void clearSelectedBuild()
+	{
 		hoveredGridCellPosition = null;
 		gridManager.clearHighlight();
-		ghostBuild.QueueFree();
+		if (IsInstanceValid(ghostBuild))
+		{
+			ghostBuild.QueueFree();
+		}
 		ghostBuild = null;
 	}
 

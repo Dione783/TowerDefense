@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://1enpvpw53m4e"]
 
-[ext_resource type="PackedScene" uid="uid://b7fqwaf74qf5e" path="res://scenes/Sprites/VillageSprite.tscn" id="1_ryawb"]
+[ext_resource type="PackedScene" uid="uid://c20smdiaxravh" path="res://scenes/Sprites/VillageSprite.tscn" id="1_ryawb"]
 [ext_resource type="PackedScene" uid="uid://bye7txb5cbwpm" path="res://scenes/BuildingComponent.tscn" id="2_h5dck"]
 
 [node name="House" type="Node2D"]
