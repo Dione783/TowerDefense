@@ -8,7 +8,7 @@ using Godot;
 public partial class GridManager : Node
 {
 	private const string IS_BUILDABLE = "is_buildable";
-	private const string IS_WOOD  = "is_wood";
+	private const string IS_WOOD = "is_wood";
 	[Signal]
 	public delegate void updateResourcesEventHandler(int resources);
 	[Export]
@@ -17,11 +17,13 @@ public partial class GridManager : Node
 	private TileMapLayer baseTerraintTileMapLayer;
 	private Vector2I? gridCellPosition;
 	private HashSet<Vector2I> validBuildableTile = new();
+	private HashSet<Vector2I> recalculatedTiles = new();
 	private HashSet<Vector2I> collectedResources = new();
 	private List<TileMapLayer> allTileMapLayers = new();
 	public override void _Ready()
 	{
 		GameManager.instance.buildingPlaced += OnBuildingPlacing;
+		GameManager.instance.DestroingBuilding += OnDestroingBuilding;
 		allTileMapLayers = getAllTileMapLayers(baseTerraintTileMapLayer);
 	}
 
@@ -39,7 +41,7 @@ public partial class GridManager : Node
 	{
 		setBuildableTiles(buildingComponent);
 		setGettedResources(buildingComponent);
-		highLightTile();
+		highLightTiles();
 	}
 
 	public Vector2I getMousePosition()
@@ -47,6 +49,24 @@ public partial class GridManager : Node
 		var position = highLightTileMapLayer.GetGlobalMousePosition();
 		return new Vector2I((int)position.X, (int)position.Y) / 64;
 	}
+
+	public void RecalcBuildings(BuildingComponent buildingComponent)
+	{
+		recalculatedTiles.Clear();
+		validBuildableTile.Clear();
+		collectedResources.Clear();
+		var buildingComponents = GetTree().GetNodesInGroup(nameof(BuildingComponent)).Cast<BuildingComponent>()
+		.Where((component) => buildingComponent != component);
+		foreach (var building in buildingComponents)
+		{
+			setBuildableTiles(building);
+			setGettedResources(building);
+			clearHighlight();
+		}
+		EmitSignal(SignalName.updateResources, collectedResources.Count);
+	}
+
+
 	public Vector2I getGridCellPosition()
 	{
 		return getMousePosition() * 64;
@@ -68,7 +88,7 @@ public partial class GridManager : Node
 		return false;
 	}
 
-	public void highLightTile()
+	public void highLightTiles()
 	{
 		foreach (var tilePosition in validBuildableTile)
 		{
@@ -88,21 +108,22 @@ public partial class GridManager : Node
 
 	public void HighLightExpandedBuildableTile(Vector2I coord, int radius)
 	{
-		highLightTile();
+		
 		var validTiles = getValidTilesInRadius(coord, radius).ToHashSet();
-		var expandedTiles = validTiles.Except(validBuildableTile).Except(GetOcuppiedTiles());
+		var expandedTiles = validTiles.Except(validBuildableTile).Except(recalculatedTiles);
 		var atlasCoord = new Vector2I(1, 0);
 		foreach (var tilePosition in expandedTiles)
 		{
 			highLightTileMapLayer.SetCell(new Vector2I(tilePosition.X, tilePosition.Y), 0, atlasCoord);
 		}
+		highLightTiles();
 	}
 
 	private List<Vector2I> getResourceInRadius(Vector2I position, int radius)
 	{
 		return getTilesInRadius(position, radius, (tilePosition) =>
 		{
-			return isCustomData(tilePosition,IS_WOOD);
+			return isCustomData(tilePosition, IS_WOOD);
 		});
 	}
 
@@ -132,19 +153,23 @@ public partial class GridManager : Node
 
 	private void setBuildableTiles(BuildingComponent buildingComponent)
 	{
+		recalculatedTiles.Add(buildingComponent.GetGridCellPosition());
 		var position = buildingComponent.GetGridCellPosition();
 		var validTiles = getValidTilesInRadius(position, buildingComponent.buildingResource.buildableRadius);
 		validBuildableTile.UnionWith(validTiles);
-		validBuildableTile.ExceptWith(GetOcuppiedTiles());
+		validBuildableTile.ExceptWith(recalculatedTiles);
+		highLightTiles();
 	}
 
-	private void setGettedResources(BuildingComponent buildingComponent){
+	private void setGettedResources(BuildingComponent buildingComponent)
+	{
 		var position = buildingComponent.GetGridCellPosition();
-		var resource = getResourceInRadius(position,buildingComponent.buildingResource.resourceRadius);
+		var resource = getResourceInRadius(position, buildingComponent.buildingResource.resourceRadius);
 		var oldResourcesCount = collectedResources.Count;
 		collectedResources.UnionWith(resource);
-		if(oldResourcesCount != collectedResources.Count){
-			EmitSignal(SignalName.updateResources,collectedResources.Count);
+		if (oldResourcesCount != collectedResources.Count)
+		{
+			EmitSignal(SignalName.updateResources, collectedResources.Count);
 		}
 	}
 
@@ -164,10 +189,8 @@ public partial class GridManager : Node
 		return result;
 	}
 
-	private IEnumerable<Vector2I> GetOcuppiedTiles()
+	public void OnDestroingBuilding(BuildingComponent buildingComponent)
 	{
-		var buildingComponents = GetTree().GetNodesInGroup(nameof(BuildingComponent)).Cast<BuildingComponent>();
-		var exceptions = buildingComponents.Select(x => x.GetGridCellPosition());
-		return exceptions;
+		RecalcBuildings(buildingComponent);
 	}
 }
