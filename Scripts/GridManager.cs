@@ -11,6 +11,8 @@ public partial class GridManager : Node
 	private const string IS_WOOD = "is_wood";
 	[Signal]
 	public delegate void updateResourcesEventHandler(int resources);
+	[Signal]
+	public delegate void updateGridManagerEventHandler();
 	[Export]
 	private TileMapLayer highLightTileMapLayer;
 	[Export]
@@ -37,6 +39,10 @@ public partial class GridManager : Node
 		highLightTileMapLayer.Clear();
 	}
 
+	public Vector2I getWorldGridPosition(Vector2 position){
+		return new Vector2I((int)position.X, (int)position.Y) / 64;
+	}
+
 	private void OnBuildingPlacing(BuildingComponent buildingComponent)
 	{
 		setBuildableTiles(buildingComponent);
@@ -47,7 +53,7 @@ public partial class GridManager : Node
 	public Vector2I getMousePosition()
 	{
 		var position = highLightTileMapLayer.GetGlobalMousePosition();
-		return new Vector2I((int)position.X, (int)position.Y) / 64;
+		return getWorldGridPosition(position);
 	}
 
 	public void RecalcBuildings(BuildingComponent buildingComponent)
@@ -159,6 +165,7 @@ public partial class GridManager : Node
 		validBuildableTile.UnionWith(validTiles);
 		validBuildableTile.ExceptWith(recalculatedTiles);
 		highLightTiles();
+		EmitSignal(SignalName.updateGridManager);
 	}
 
 	private void setGettedResources(BuildingComponent buildingComponent)
@@ -171,6 +178,7 @@ public partial class GridManager : Node
 		{
 			EmitSignal(SignalName.updateResources, collectedResources.Count);
 		}
+		EmitSignal(SignalName.updateGridManager);
 	}
 
 	private List<TileMapLayer> getAllTileMapLayers(TileMapLayer tileMapLayer)

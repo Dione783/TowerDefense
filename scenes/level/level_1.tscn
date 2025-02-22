@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://dr226aytsmooc"]
+
+[ext_resource type="PackedScene" uid="uid://4ots4k2xes1s" path="res://scenes/level/BaseLevel.tscn" id="1_sntb7"]
+[ext_resource type="TileSet" uid="uid://b6s5cdbkpkg00" path="res://tileset.tres" id="2_1bjb5"]
+
+[node name="Level1" instance=ExtResource("1_sntb7")]
+
+[node name="FoamTileMapLayer" type="TileMapLayer" parent="YSortRoot/BaseTerrainTileMapLayer" index="0"]
+y_sort_enabled = true
+tile_set = ExtResource("2_1bjb5")
