@@ -9,6 +9,7 @@ public partial class GridManager : Node
 {
 	private const string IS_BUILDABLE = "is_buildable";
 	private const string IS_WOOD = "is_wood";
+	private const string IS_IGNORED = "is_ignored";
 	[Signal]
 	public delegate void updateResourcesEventHandler(int resources);
 	[Signal]
@@ -22,11 +23,17 @@ public partial class GridManager : Node
 	private HashSet<Vector2I> recalculatedTiles = new();
 	private HashSet<Vector2I> collectedResources = new();
 	private List<TileMapLayer> allTileMapLayers = new();
+	private GameCamera camera;
+	private Node2D baseBuild;
 	public override void _Ready()
 	{
 		GameManager.instance.buildingPlaced += OnBuildingPlacing;
 		GameManager.instance.DestroingBuilding += OnDestroingBuilding;
 		allTileMapLayers = getAllTileMapLayers(baseTerraintTileMapLayer);
+		camera = GetNode<GameCamera>("%GameCamera");
+		baseBuild = GetNode<Node2D>("%Base");
+		camera.setBoundingRects(baseTerraintTileMapLayer.GetUsedRect());
+		camera.setCenterPosition(baseBuild.GlobalPosition);
 	}
 
 	public void setGridCellPosition()
@@ -88,7 +95,7 @@ public partial class GridManager : Node
 		foreach (var layer in allTileMapLayers)
 		{
 			var data = layer.GetCellTileData(tilePosition);
-			if (data == null) continue;
+			if (data == null || (bool)data.GetCustomData(IS_IGNORED)) continue;
 			return (bool)data.GetCustomData(dataName);
 		}
 		return false;
@@ -177,8 +184,10 @@ public partial class GridManager : Node
 		if (oldResourcesCount != collectedResources.Count)
 		{
 			EmitSignal(SignalName.updateResources, collectedResources.Count);
+			highLightTiles();
 		}
 		EmitSignal(SignalName.updateGridManager);
+		highLightTiles();
 	}
 
 	private List<TileMapLayer> getAllTileMapLayers(TileMapLayer tileMapLayer)

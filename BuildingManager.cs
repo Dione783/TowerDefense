@@ -8,6 +8,8 @@ using Godot;
 
 public partial class BuildingManager : Node
 {
+	[Export]
+	private int initialResources = 4;
 	private Vector2I gridPosition;
 	[Export]
 	private GridManager gridManager;
@@ -17,7 +19,6 @@ public partial class BuildingManager : Node
 	private BuildingResource toPlaceResource;
 	[Export]
 	private GameUi gameUI;
-	private int initialResources = 8;
 	private int usedResources;
 	private int currentCollectedResources;
 	private readonly StringName FIRE_BUTTON = "Mouse_Fire";
@@ -58,7 +59,7 @@ public partial class BuildingManager : Node
 		switch (currentState)
 		{
 			case State.Normal:
-			
+
 				break;
 			case State.placingBuilding:
 				ghostBuild.GlobalPosition = gridManager.getGridCellPosition();
@@ -147,7 +148,7 @@ public partial class BuildingManager : Node
 		switch (currentState)
 		{
 			case State.Normal:
-			clearSelectedBuild();
+				clearSelectedBuild();
 				break;
 			case State.placingBuilding:
 				gridDisplay();
