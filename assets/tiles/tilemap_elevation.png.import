@@ -2,20 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-<<<<<<< HEAD
-uid="uid://be2itya12rhfk"
-=======
-uid="uid://b6aj0yd8prj63"
->>>>>>> 8bad94781ba1cf0beb7289bfe6f0bde5598607a2
-path="res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex"
+uid="uid://bhaobt82b6ese"
+path="res://.godot/imported/Tilemap_Elevation.png-69b460a310cfa1bbb7f5c20e99765dff.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://icon.svg"
-dest_files=["res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex"]
+source_file="res://assets/tiles/Tilemap_Elevation.png"
+dest_files=["res://.godot/imported/Tilemap_Elevation.png-69b460a310cfa1bbb7f5c20e99765dff.ctex"]
 
 [params]
 
@@ -36,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false
