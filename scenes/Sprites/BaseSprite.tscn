@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://buro2t2pq4v8h"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_c0mmk"]
+
+[node name="Base" type="Sprite2D"]
+y_sort_enabled = true
+position = Vector2(32, 32)
+texture = SubResource("PlaceholderTexture2D_c0mmk")
+offset = Vector2(-32, -32)
+region_enabled = true
+region_rect = Rect2(0, 0, 64, 64)

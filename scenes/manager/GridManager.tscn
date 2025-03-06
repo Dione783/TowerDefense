@@ -1,6 +1,15 @@
+<<<<<<< HEAD
 [gd_scene load_steps=2 format=3 uid="uid://b7d1hhincgf58"]
 
 [ext_resource type="Script" path="res://scenes/manager/GridManager.cs" id="1_piwkp"]
 
 [node name="GridManager" type="Node"]
 script = ExtResource("1_piwkp")
+=======
+[gd_scene load_steps=2 format=3 uid="uid://85dr3qyeworx"]
+
+[ext_resource type="Script" path="res://scripts/GridManager.cs" id="1_vb2mj"]
+
+[node name="GridManager" type="Node"]
+script = ExtResource("1_vb2mj")
+>>>>>>> 8bad94781ba1cf0beb7289bfe6f0bde5598607a2

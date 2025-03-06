@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://c3vhs0eradaib"]
+
+[ext_resource type="Script" path="res://BuildingManager.cs" id="1_kde6l"]
+
+[node name="BuildingManager" type="Node"]
+script = ExtResource("1_kde6l")
+ghostBuildingScene = null

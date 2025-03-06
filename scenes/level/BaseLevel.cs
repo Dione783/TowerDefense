@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 using Game.Manager;
 using Godot;
 
@@ -35,3 +36,27 @@ public partial class BaseLevel : Node
 		}
 	}
 }
+=======
+using Godot;
+
+public partial class BaseLevel : Node
+{
+    private GridManager gridmanager;
+    private GoldMine goldMine;
+    public override void _Ready()
+    {
+        gridmanager = GetNode<GridManager>("GridManager");
+        goldMine = GetNode<GoldMine>("%GoldMine");
+        gridmanager.updateGridManager += OnUpdateGridManager;
+    }
+
+    private void OnUpdateGridManager()
+    {
+        var goldMinePosition = gridmanager.getWorldGridPosition(goldMine.GlobalPosition);
+        if(gridmanager.isBuildableTile(goldMinePosition)){
+            goldMine.setActive();
+            GD.Print("Congratulations you Win");
+        }
+    }
+}
+>>>>>>> 8bad94781ba1cf0beb7289bfe6f0bde5598607a2
